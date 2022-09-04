@@ -26,5 +26,16 @@ router.get('/', (req, res) => {
     res.json(strippedVideos);
 })
 
+router.get('/:id', (req, res) => {
+    const videos = readVideos();
+    console.log((videos[0]))
+
+    const foundVideo = videos.find((video) => {
+        return video.id === req.params.id
+    })
+
+    res.json(foundVideo);
+})
+
 
 module.exports = router;
