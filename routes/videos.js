@@ -11,7 +11,7 @@ function readVideos() {
     return videosData;
 }
 
-router.get('/', (req, res) => {
+router.get('/', (_req, res) => {
     const videos = readVideos();
 
     const strippedVideos = videos.map((video) => {
@@ -24,7 +24,7 @@ router.get('/', (req, res) => {
     })
 
     if (strippedVideos.length === 0) {
-        res.status(404).json({
+        return res.status(404).json({
             message: "No videos posted, make an upload and request again",
         })
     }
@@ -40,7 +40,7 @@ router.get('/:id', (req, res) => {
     })
 
     if (foundVideo === undefined) {
-        res.status(404).json({
+        return res.status(404).json({
             message: "No video with that id exists"
         })
     }
@@ -49,16 +49,22 @@ router.get('/:id', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-    if (!(req.body.title && req.body.description)) {
-        res.status(400).json({
+    console.log(req.body)
+    if ((req.body.title === '') || (req.body.description === '')) {
+        return res.status(400).json({
             message: "Please fill out all the required information and resubmit"
+        })
+    }
+    if (req.body.image === '') {
+        return res.status(400).json({
+            message: "Image may not exist or has the wrong file path"
         })
     }
 
     const newVideo = {
         title: req.body.title,
         channel: "TestUser",
-        image: "http://localhost:8080/images/Upload-video-preview.jpg",
+        image: req.body.image,
         description: req.body.description,
         views: "0",
         likes: "0",

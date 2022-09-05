@@ -8,9 +8,16 @@ app.use(express.json());
 const cors = require("cors");
 app.use(cors());
 
-const axios = require("axios");
-
 app.use("/images", express.static("./public/images"));
+
+app.use((req, res, next) => {
+  if (!req.query.api_key) {
+    return res.status(403).json({
+      message: "Please use an API key - try adding api_key query to the URL request"
+    })
+  }
+  next();
+})
 
 const videosRoutes = require("./routes/videos");
 app.use("/videos", videosRoutes);
